@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="3dp">
+
+    <me.himanshusoni.chatmessageview.ChatMessageView
+        android:id="@+id/chatMessageView"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cmv_arrowGravity="start"
+        app:cmv_arrowMargin="3dp"
+        app:cmv_arrowPosition="right"
+        app:cmv_backgroundColor="#D2E3F1"
+        app:cmv_backgroundColorPressed="#FFBABABA"
+        app:cmv_contentPadding="10dp"
+        app:cmv_cornerRadius="3dp"
+        android:layout_gravity="end"
+        app:cmv_showArrow="true" >
+
+        <LinearLayout
+            android:id="@+id/linearLayoutMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/textViewMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="Hello" />
+
+            <TextView
+                android:id="@+id/textViewDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:text="2020-56-56"/>
+
+        </LinearLayout>
+
+    </me.himanshusoni.chatmessageview.ChatMessageView>
+
+
+</LinearLayout>

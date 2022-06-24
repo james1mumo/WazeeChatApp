@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "711193428124",
+    "project_id": "wazeechatapp",
+    "storage_bucket": "wazeechatapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:711193428124:android:42d0643b3f406ae440ad59",
+        "android_client_info": {
+          "package_name": "com.dekut.wazeechatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "711193428124-c102g957fiiuiuaat5umf2f5kedd0lbi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgGVELjo7n2quGSSmhErarfHlwIb6v4Io"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "711193428124-c102g957fiiuiuaat5umf2f5kedd0lbi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
