@@ -4,10 +4,12 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -27,6 +29,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -167,6 +170,18 @@ public class HomeFragment extends Fragment {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, 2);
             FancyToast.makeText(getContext(), "Grant Contacts Permission", FancyToast.LENGTH_LONG, FancyToast.INFO, false).show();
         }
+
+        result = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CALL_LOG);
+        if (result != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CALL_LOG}, 2);
+            FancyToast.makeText(getContext(), "Grant Call Log Permission", FancyToast.LENGTH_LONG, FancyToast.INFO, false).show();
+        }
+        result = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE);
+        if (result != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CALL_PHONE}, 2);
+            FancyToast.makeText(getContext(), "Grant Call Phone Permission", FancyToast.LENGTH_LONG, FancyToast.INFO, false).show();
+        }
+
     }
 
     @Override
@@ -196,6 +211,7 @@ class HomeFragmentAdapter extends RecyclerView.Adapter<HomeFragmentAdapter.ViewH
     private HomeFragmentAdapter.ItemClickListener mClickListener;
     private Map<String, String> message;
     private Context context;
+    private TextToSpeech textToSpeechSystem;
 
     // data is passed into the constructor
     public HomeFragmentAdapter(Context context, ArrayList<Map<String, String>> data) {
@@ -225,6 +241,38 @@ class HomeFragmentAdapter extends RecyclerView.Adapter<HomeFragmentAdapter.ViewH
 
         holder.buttonCall.setOnClickListener(v -> {
             //add calling feature
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Do you want to call "+name+"?");
+            textToSpeechSystem = new TextToSpeech(context, status -> {
+                if (status == TextToSpeech.SUCCESS) {
+                    textToSpeechSystem.speak("Do you want to call "+name+"?", TextToSpeech.QUEUE_ADD, null);
+                    }
+                });
+
+            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    textToSpeechSystem = new TextToSpeech(context, status -> {
+                        if (status == TextToSpeech.SUCCESS) {
+                            textToSpeechSystem.speak("Calling "+name, TextToSpeech.QUEUE_ADD, null);
+                        }
+                    });
+                    Intent intent = new Intent(Intent.ACTION_CALL);
+                    intent.setData(Uri.parse("tel:"+phone));
+                    context.startActivity(intent);
+
+                    FancyToast.makeText(context,"Choose Sim card to call with", FancyToast.LENGTH_LONG, FancyToast.INFO, false).show();
+
+                }
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+
+            builder.show();
 
         });
         holder.buttonSms.setOnClickListener(v -> {

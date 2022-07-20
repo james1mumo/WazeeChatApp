@@ -54,6 +54,8 @@ public class SmsFragment extends Fragment {
     private TextView textViewError;
     String phone;
 
+    private ProgressDialog progressDialog;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         smsViewModel =
@@ -69,6 +71,11 @@ public class SmsFragment extends Fragment {
         recyclerView.setAdapter(smsFragmentAdapter);
 
         textViewError = root.findViewById(R.id.textViewError);
+        progressDialog = new ProgressDialog(getContext());
+        progressDialog.setTitle("Please Wait");
+        progressDialog.setMessage("Fetching Latest Sms");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
 
         loadRecentSms();
 
@@ -137,10 +144,13 @@ public class SmsFragment extends Fragment {
                 if (!anSmsExists){
                     textViewError.setVisibility(View.VISIBLE);
                 }
+
+                progressDialog.dismiss();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                progressDialog.dismiss();
 
             }
         });

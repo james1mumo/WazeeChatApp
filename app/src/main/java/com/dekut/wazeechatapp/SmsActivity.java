@@ -57,7 +57,7 @@ public class SmsActivity extends AppCompatActivity {
         receiversName = getIntent().getStringExtra("receiversName");
         receiversPhone = getIntent().getStringExtra("receiversPhone");
 
-
+        setTitle(receiversName+" Chat");
 
         isSender = true;
         floatingActionButtonSendMessage.setOnClickListener(v -> sendMessage());
