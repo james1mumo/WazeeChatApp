@@ -1,13 +1,16 @@
 package com.dekut.wazeechatapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
@@ -32,6 +36,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import me.himanshusoni.chatmessageview.ChatMessageView;
 
@@ -43,7 +48,7 @@ public class SmsActivity extends AppCompatActivity {
     private SmsActivityAdapter smsActivityAdapter;
     private ArrayList<Map<String , String >> messages;
     private ProgressDialog progressDialog;
-
+    private static final int SPEECH_REQUEST_CODE = 11;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,11 +76,31 @@ public class SmsActivity extends AppCompatActivity {
         smsActivityAdapter = new SmsActivityAdapter(this, messages, sendersPhone);
         recyclerView.setAdapter(smsActivityAdapter);
 
+        editTextMessage.setOnClickListener(v -> {
+            Intent speechIntent=new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+            speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+            speechIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+            speechIntent.putExtra(RecognizerIntent.EXTRA_PROMPT,"Say message to sent");
+            try {
+                startActivityForResult(speechIntent,SPEECH_REQUEST_CODE);
+            }catch (Exception e){
+                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
 
         loadMessages();
 
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==SPEECH_REQUEST_CODE){
+            if(resultCode==RESULT_OK && data!=null){
+                ArrayList<String> Answer=data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                editTextMessage.setText(Objects.requireNonNull(Answer).get(0));
+            }
+        }
+    }
     private void sendMessage() {
         String message = editTextMessage.getText().toString();
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy @ HH:mm", Locale.US);
@@ -157,6 +182,7 @@ public class SmsActivity extends AppCompatActivity {
 }
 
 class SmsActivityAdapter extends RecyclerView.Adapter<SmsActivityAdapter.ViewHolder>{
+
 
     private ArrayList<Map<String, String>> mData;
     private LayoutInflater mInflater;

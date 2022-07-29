@@ -118,6 +118,8 @@ public class DashboardFragment extends Fragment {
         int type = cursor.getColumnIndex(CallLog.Calls.TYPE);
         int date = cursor.getColumnIndex(CallLog.Calls.DATE);
         int duration = cursor.getColumnIndex(CallLog.Calls.DURATION);
+
+        int i = 0;
         while (cursor.moveToNext()) {
             String phNumber = cursor.getString(number);
             String phName = cursor.getString(name);
@@ -149,6 +151,9 @@ public class DashboardFragment extends Fragment {
 
             hashMapNames.add(hashMap);
             allContacts.add(hashMap);
+
+            i++;
+            if (i>20) break;
 
         }
         cursor.close();
@@ -214,7 +219,7 @@ class DashboardFragmentAdapter extends RecyclerView.Adapter<DashboardFragmentAda
 
 
         holder.textViewName.setText(name);
-        if (!name.isEmpty())
+        if (name!=null)
             holder.textViewPic.setText(name.substring(0,1).toUpperCase());
         else {
             holder.textViewPic.setText("+");
